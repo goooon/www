@@ -30,6 +30,7 @@ const source = require('vinyl-source-stream');
 const watchify = require('watchify');
 
 const SRC_DIR = 'www';
+const platform = 'win';
 
 const CONFIG_BY_PLATFORM = {
   android: {
