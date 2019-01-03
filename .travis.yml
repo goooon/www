@@ -55,7 +55,7 @@ jobs:
     # stage.
     - stage: build
       script:
-        - yarn gulp build --platform=browser
+        - yarn gulp build --platform=android
 
     - stage: tag
       script:
