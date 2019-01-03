@@ -21,8 +21,7 @@ export BUILD_DIR=${BUILD_DIR:-$ROOT_DIR/build}
 
 chmod 777 src/www/build_action.sh
 chmod 777 src/electron/*
-chmod 777 src/scripts/test_action.sh
-chmod 777 src/scripts/*
+chmod 777 scripts/test_action.sh
 
 function do_action() {
   local action=$1
