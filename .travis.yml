@@ -55,7 +55,6 @@ jobs:
     # stage.
     - stage: build and unit test
       script:
-        - yarn gulp build --platform=browser
 
     - stage: tag
       script:
