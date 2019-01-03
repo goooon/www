@@ -17,12 +17,6 @@ language: node_js
 node_js:
   - "10"
 
-chmod 777 src/www/build_action.sh
-chmod 777 src/electron/*
-chmod 777 src/scripts/test_action.sh
-chmod 777 src/scripts/*
-
-
 cache:
   yarn: true
   directories:
