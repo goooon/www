@@ -14,9 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-chmod 777 src/www/build_action.sh
-chmod 777 src/electron/*
-chmod 777 scripts/*
 
 yarn do src/www/build
 
