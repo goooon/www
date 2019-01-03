@@ -16,6 +16,7 @@
 
 chmod 777 src/www/build_action.sh
 chmod 777 src/electron/*
+chmod 777 scripts/*
 
 yarn do src/www/build
 
