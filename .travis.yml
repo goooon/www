@@ -32,7 +32,7 @@ before_install:
   - export PATH="$HOME/.yarn/bin:$PATH"
 
 stages:
-  - name: build and unit test
+  - name: build
     if: type != cron
   - name: tag
     if: type = cron
@@ -53,8 +53,9 @@ jobs:
     # command failed. However, since each stage incurs a significantly start-up
     # cost, we combine test and build commands for all components into one fast
     # stage.
-    - stage: build and unit test
+    - stage: build
       script:
+        - yarn gulp build --platform=browser
 
     - stage: tag
       script:
