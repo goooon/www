@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>index</title>
+	<link rel="stylesheet" type="text/css" href="css/default.css">
+	<link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+<body>
+	<script type="text/javascript" src='js/stopExecutionOnTimeout.js?t=1'></script>
+	<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+	<script src="cordova.js"></script>
+	<script src="cordova_main.js"></script>
+	<script src="settings.ts"></script>
+	<script>
+/*
+		var request = new XMLHttpRequest();
+		var content = "form=s";
+		request.open("GET", "http://hk8.56xiaomishu.com:80/v1/list?"+content,true);
+		request.onload = onload;
+		request.onerror = onerror;
+		request.onprogress = onprogress;
+		request.onreadystatechange = onreadystatechange;
+		request.send();
+
+		function onload() {
+			if (request.status === 200) {
+				console.log("success");
+			} else {
+
+			}
+		}
+
+		function onerror() {
+			console.log("err");
+			this.rootEl.showToast('请检查网络连接', 10000);
+		}
+
+		function onprogress(event) {
+			console.log("progress",event);
+		}
+
+		function onreadystatechange() {
+			console.log("onreadystatechange" + request.readyState + request.status + request.responseText);
+			if (request.readyState == 4 && request.status == 200) {//验证请求是否发送成功
+				var json = JSON.parse(request.responseText);
+				if (json['status'] == 'success') {
+					console.log(json);//{"status":"success","uuid":"0e8ab488-dfe3-4bbe-8e73-9126727c3229","hash":"$2y$10$guz8MPzEi8xZQDfcSNWhDufTiQc8QSOistgdoaaTEBuFW4MFr2J8a"}
+
+				} else {
+
+				}
+			} else {
+				this.rootEl.showToast('请检查网络连接', 10000);
+			}
+		}
+		*/
+
+	if(window.localStorage["webroot"] == null){
+		window.localStorage["webroot"] = "https://www.qqzyl.net/";
+	}
+
+    console.log("current uuid:" + window.localStorage["uuid"] + " and hash:" + window.localStorage["hash"]);
+    if( window.localStorage["uuid"] == '' ||
+        window.localStorage["uuid"] == null ||
+        window.localStorage["hash"] == '' ||
+        window.localStorage["hash"] == null){
+            window.location.replace('login.html');
+    }
+    else{
+        window.location.replace('cordova_index.html');
+    }
+
+	</script>
+</body>
+</html>

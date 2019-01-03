@@ -1,0 +1,403 @@
+<!--
+  Copyright 2018 The Outline Authors
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel='import' href='../bower_components/paper-input/paper-input.html'>
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles-classes.html">
+
+<link rel="import" href="server-connection-viz.html">
+
+<dom-module id="server-card">
+  <template>
+    <style>
+      :host {
+        display: block;
+        background: #EFEFEF;
+        /*
+          Ballpark figure chosen to be comfortably more than
+          the combined height of the toolbar, button, and status.
+          Really only relevant for testing since virtually no
+          real Android device will be this short.
+        */
+        min-height: 300px;
+      }
+
+      paper-card {
+        width: 100%;
+      }
+
+      paper-item {
+        white-space: nowrap;
+      }
+
+      paper-item:not([disabled]) {
+        cursor: pointer;
+      }
+
+      .card-header {
+        display: flex;
+      }
+
+      .card-content {
+        text-align: center;
+        padding: 10% 0;
+      }
+
+      #serverInfo {
+        flex: 1;
+        padding: 16px 0 0 20px;
+        font-size: 20px;
+      }
+
+      #serverName {
+        line-height: 32px;
+        word-break: break-word;
+      }
+
+      #serverHost {
+        color: rgba(0,0,0,0.54);
+        font-size: small;
+      }
+
+      #server-visualization-button {
+        background: none;
+        border-radius: 100px;
+        margin: 0;
+        padding: 3px 3px 0;
+      }
+
+      .status-message {
+        color: var(--disabled-text-color);
+        font-size: small;
+        font-weight: normal;
+        margin: 12px 0;
+        text-transform: capitalize;
+      }
+
+      .card-actions {
+        background-color: var(--paper-grey-50);
+        text-align: center;
+        border-radius: 0 0 2px 2px;
+      }
+      
+      #connectButton {
+        color: #2fbea5;
+        font-weight: bold;
+      }
+
+      #connectButton[disabled] {
+        color: var(--disabled-text-color);
+        background: transparent;
+      }
+
+      @media (min-height: 600px) {
+        .card-content {
+          padding: 20% 0;
+        }
+      }
+
+      .cf:after{content:"";display:block;height:0;clear:both;}
+      .wrap{width:100%;height:50px;}
+      .left{width:200px;background:transparent;}
+      .center{background:transparent;}
+      .right{width:200px;background:transparent;}
+      /*table法*/
+      .table{display:table;}
+      .table .inner{display:table-cell;}
+
+      button {
+        outline: none;
+        background: none;
+        border: 0;
+        box-sizing: border-box;
+        box-shadow: inset 0 0 0 2px #2fbea5;
+        color: #2fbea5;
+        font-size: inherit;
+        font-weight: 700;
+        margin: 1em;
+        padding: 1em 2em;
+        text-align: center;
+        text-transform: capitalize;
+        position: relative;
+        vertical-align: middle;
+      }
+      button::before, button::after {
+        box-sizing: border-box;
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+
+      .center:hover {
+        color: #6477b9;
+      }
+      .center::before, .center::after {
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        -webkit-transform-origin: center;
+        -ms-transform-origin: center;
+        transform-origin: center;
+      }
+      .center::before {
+        border-top: 2px solid #6477b9;
+        border-bottom: 2px solid #6477b9;
+        -webkit-transform: scale3d(0, 1, 1);
+        transform: scale3d(0, 1, 1);
+      }
+      .center::after {
+        border-left: 2px solid #6477b9;
+        border-right: 2px solid #6477b9;
+        -webkit-transform: scale3d(1, 0, 1);
+        transform: scale3d(1, 0, 1);
+      }
+      .center:hover::before, .center:hover::after {
+        -webkit-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1);
+        -webkit-transition: -webkit-transform 0.5s;
+        transition: transform 0.5s;
+      }
+
+      .spin {
+        width: 6em;
+        height: 6em;
+        padding: 0;
+      }
+      .spin:hover {
+        color: #0eb7da;
+      }
+      .spin::before, .spin::after {
+        top: 0;
+        left: 0;
+      }
+      .spin::before {
+        border: 2px solid transparent;
+      }
+      .spin:hover::before {
+        border-top-color: #0eb7da;
+        border-right-color: #0eb7da;
+        border-bottom-color: #0eb7da;
+        -webkit-transition: border-top-color 0.15s linear, border-right-color 0.15s linear 0.1s, border-bottom-color 0.15s linear 0.2s;
+        transition: border-top-color 0.15s linear, border-right-color 0.15s linear 0.1s, border-bottom-color 0.15s linear 0.2s;
+      }
+      .spin::after {
+        border: 0 solid transparent;
+      }
+      .spin:hover::after {
+        border-top: 2px solid #0eb7da;
+        border-left-width: 2px;
+        border-right-width: 2px;
+        -webkit-transform: rotate(270deg);
+        -ms-transform: rotate(270deg);
+        transform: rotate(270deg);
+        -webkit-transition: -webkit-transform 0.4s linear 0s, border-left-width 0s linear 0.35s;
+        transition: transform 0.4s linear 0s, border-left-width 0s linear 0.35s;
+      }
+
+      .circle {
+        border-radius: 100%;
+        box-shadow: none;
+      }
+      .circle::before, .circle::after {
+        border-radius: 100%;
+      }
+
+      /*
+      .div {
+        position: relative;
+        width: 50px;
+        height: 86.6px;
+        margin: 50px auto;
+        background-color: transparent;
+      }
+      .div:before {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 0;
+        height: 0;
+        right:50px;
+        border-width: 43.3px 25px;
+        border-style: solid;
+        border-color: transparent red transparent transparent;
+      }
+      .div:after {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 0;
+        height: 0;
+        left:50px;
+        border-width: 43.3px 25px;
+        border-style: solid;
+        border-color: transparent transparent transparent red;
+        top:0;
+      }
+      */
+    </style>
+    <paper-card>
+      <div class="card-header">
+        <div id="serverInfo">
+          <div id="serverName" style="text-align:center">[[serverName]]</div>
+          <div id="serverHost" style="text-align:center">到期时间：[[serverHost]]</div>
+        </div>
+        <paper-menu-button horizontal-align="right" close-on-activate="true">
+          <!-- todo gz -->
+          <!-- <paper-icon-button icon="icons:more-vert" slot="dropdown-trigger"></paper-icon-button> -->
+          <paper-listbox id="menu" slot="dropdown-content" on-iron-activate="_onMenuItemPressed" attr-for-selected="name">
+            <paper-item name="rename">[[localize('server-rename')]]</paper-item>
+            <paper-item name="forget">[[localize('server-forget')]]</paper-item>
+          </paper-listbox>
+        </paper-menu-button>
+      </div>
+      <div class="card-content">
+        <div>
+          <paper-button id="server-visualization-button" on-tap="_onConnectToggled"
+            disabled$="[[connectButtonDisabled]]" noink>
+            <server-connection-viz state="[[state]]" root-path="[[rootPath]]"></server-connection-viz>
+          </paper-button>
+        </div>
+        <div class$="status-message [[state]]">[[statusMessage]]</div>
+      </div>
+      <div class="wrap table" >
+        <div class="inner left">
+          <div style="text-align:center">
+            <button class="spin circle" onclick='on_feedback()'>反馈</button>
+          </div>
+        </div>
+        <div class="inner center">
+          <div style="text-align:center">
+            <button class="spin circle" onclick='on_purchase()'>充值</button>
+          </div>
+        </div>
+        <div class="inner right">
+          <div style="text-align:center">
+            <button class="spin circle" on-tap="_on_logoff">退出</button>
+          </div>
+        </div>
+      </div>
+      <!--
+        <div class='login_fields__submit'>
+          <input type='submit' value='反馈' id='feedback' onclick='on_feedback()'>
+          <input type='submit' value='续费' id='purchase' onclick='on_purchase()'>
+          <input type='submit' value='注销' id='logoff' onclick='on_logoff()'>
+        </div>
+        -->
+      <!-- <div class="card-actions">
+        <paper-button id="connectButton" on-tap="_onConnectToggled"
+          disabled$="[[connectButtonDisabled]]">[[connectButtonLabel]]</paper-button>
+      </div> -->
+    </paper-card>
+  </template>
+  <script>
+    'use strict';
+    function on_feedback(){
+        window.open(window.localStorage["webroot"] + "submitticket.php");
+    }
+
+    function on_purchase(){
+        window.open(window.localStorage["webroot"] + "cart.php");
+    }
+
+    
+    Polymer({
+      is: 'server-card',
+      properties: {
+        // Need to declare localize function passed in from parent, or else
+        // localize() calls within the template won't be updated.
+        localize: Function,
+        rootPath: String,
+        serverName: String,
+        serverId: String,
+        serverHost: String,
+        state: {
+          type: String,
+          value: 'DISCONNECTED'
+        },
+        statusMessage: {
+          type: String,
+          computed: '_computeStatusMessage(state, localize)'
+        },
+        connectButtonLabel: {
+          type: String,
+          computed: '_computeConnectButtonLabel(state, localize)'
+        },
+        connectButtonDisabled: {
+          type: Boolean,
+          computed: '_computeConnectButtonDisabled(state)'
+        }
+      },
+      _onConnectToggled: function() {
+        var connect = this.state === 'DISCONNECTED';
+        var eventId = (connect ? 'C' : 'Disc') + 'onnectPressed';
+        this.fire(eventId, {serverId: this.serverId});
+      },
+      _computeStatusMessage: function (state, localize) {
+        // If localize hasn't been defined yet, just return '' for now - Polymer will call this
+        // again once localize has been defined at which point we will return the right value.
+        if (!localize) return '';
+        return {
+          DISCONNECTED: this.localize('disconnected-server-state'),
+          CONNECTING: this.localize('connecting-server-state'),
+          CONNECTED: this.localize('connected-server-state'),
+          DISCONNECTING: this.localize('disconnecting-server-state'),
+          RECONNECTING: this.localize('reconnecting-server-state')
+        }[state] || this.localize('disconnected-server-state');
+      },
+      _computeConnectButtonLabel: function (state, localize) {
+        if (!localize) return '';
+        return {
+          DISCONNECTED: this.localize('connect-button-label'),
+          CONNECTING: this.localize('disconnect-button-label'),
+          CONNECTED: this.localize('disconnect-button-label'),
+          DISCONNECTING: this.localize('connect-button-label'),
+          RECONNECTING: this.localize('disconnect-button-label')
+        }[state] || this.localize('connect-button-label');
+      },
+      _computeConnectButtonDisabled: function (state) {
+        return state === 'CONNECTING' || state === 'DISCONNECTING';
+      },
+      _onMenuItemPressed: function(evt, detail) {
+        if (detail.selected === 'forget') {
+          this._fireForgetRequest();
+        } else if (detail.selected === 'rename') {
+          this._fireShowServerRename();
+        }
+        // This can leave the pressed paper-item in the selected state,
+        // causing it to get selected styling (e.g. font-weight: bold),
+        // so explicitly deselect it:
+        this.async(function () { this.$.menu.select(null); });
+      },
+      _fireForgetRequest: function () {
+        this.fire('ForgetPressed', {serverId: this.serverId});
+      },
+      _fireShowServerRename: function() {
+        this.fire('ShowServerRename', {serverName: this.serverName, serverId: this.serverId});
+      },
+      _on_logoff:function(){
+        console.log("QuitPressed");
+        this.fire("QuitPressed");
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,12 @@
+name: "CocoaLumberjack"
+description: "Logging framework for Mac and iOS."
+
+third_party {
+  url {
+    type: GIT
+    value: "https://github.com/CocoaLumberjack/CocoaLumberjack"
+  }
+  version: "3.4.2"
+  local_modifications: "We use Carthage to manage CocoaLumberjack."
+  last_upgrade_date { year: 2018 month: 9 day: 26 }
+}
