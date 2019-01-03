@@ -53,10 +53,6 @@ jobs:
     # command failed. However, since each stage incurs a significantly start-up
     # cost, we combine test and build commands for all components into one fast
     # stage.
-    - stage: build and unit test
-      script:
-        - yarn gulp build --platform=browser
-        - yarn do scripts/test
 
     - stage: tag
       script:
